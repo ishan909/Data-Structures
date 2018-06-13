@@ -21,9 +21,9 @@ struct Queue {
     Queue(T data) {
         enqueue(data);
     }
-    Queue(Node<T> * set_head) {
-        head = set_head;
-        tail = set_head;
+    Queue(Node<T> set_head) {
+        head = &set_head;
+        tail = &set_head;
     }
 };
 

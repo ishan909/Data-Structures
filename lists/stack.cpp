@@ -20,8 +20,8 @@ struct Stack {
     Stack(T data) {
         push(data);
     }
-    Stack(Node<T> * set_head) {
-        head = set_head;
+    Stack(Node<T> set_head) {
+        head = &set_head;
     }
 };
 
