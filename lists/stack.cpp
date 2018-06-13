@@ -10,22 +10,18 @@ struct Node {
 template <typename T>
 struct Stack {
     Node<T> * head;
-    int size;
 
     void push(T);
     T pop();
     T top();
     void print();
-    int length();
 
-    Stack() : head(), size(0) { }
+    Stack() : head() { }
     Stack(T data) {
-        size = 0;
         push(data);
     }
     Stack(Node<T> set_head) {
         head = set_head;
-        size = 1;
     }
 };
 
@@ -40,7 +36,6 @@ void Stack<T>::push(T data) {
     } else {
         head = new Node<T>(data, head);
     }
-    size++;
 }
 
 /**
@@ -49,7 +44,7 @@ void Stack<T>::push(T data) {
  */
 template <typename T>
 T Stack<T>::top() {
-    if (size > 0) {
+    if (head != nullptr) {
         return head->data;
     }
     return T();
@@ -61,17 +56,17 @@ T Stack<T>::top() {
  */
 template <typename T>
 T Stack<T>::pop() {
-    if (size > 0) {
+    if (head != nullptr) {
         T temp = head->data;
-        if (size == 1) {
+        if (head->next == nullptr) {
             delete head;
             head = nullptr;
         } else {
             Node<T> * to_delete = head;
             head = head->next;
             delete to_delete;
+            to_delete = nullptr;
         }
-        size--;
         return temp;
     }
     return T();
@@ -83,7 +78,7 @@ T Stack<T>::pop() {
  */
 template <typename T>
 void Stack<T>::print() {
-    if (size > 0) {
+    if (head != nullptr) {
         Node<T> * current = head;
         std::cout << "Stack: ";
         while (current->next != nullptr) {
@@ -98,15 +93,6 @@ void Stack<T>::print() {
     }
 }
 
-/**
- * Returns the size of the stack
- * @return the size of the stack
- */
-template <typename T>
-int Stack<T>::length() {
-    return size;
-}
-
 int main() {
     // Testing
     Stack<int> stack;
@@ -115,12 +101,10 @@ int main() {
     stack.push(2);
     stack.print();
     std::cout << "Top: " << stack.top() << std::endl;
-    std::cout << "Length: " << stack.length() << std::endl;
     std::cout << "Removed: " << stack.pop() << std::endl;
     stack.print();
     std::cout << "Removed: " << stack.pop() << std::endl;
     stack.print();
     std::cout << "Removed: " << stack.pop() << std::endl;
     stack.print();
-    std::cout << "Length: " << stack.length() << std::endl;
 }
