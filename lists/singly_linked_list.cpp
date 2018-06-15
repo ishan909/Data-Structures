@@ -80,6 +80,7 @@ bool LinkedList<T>::remove(T data) {
     }
     if (head->next == nullptr) {
         if (head->data == data) {
+            delete head;
             head = nullptr;
             size--;
             return true;
@@ -87,12 +88,16 @@ bool LinkedList<T>::remove(T data) {
             return false;
         }
     }
-    Node<T> * current = head;
-    if (current->data == data) {
+    if (head->data == data) {
+        // takes care of case that the head needs to be removed
+        Node<T> * temp = head;
         head = head->next;
+        delete temp;
+        temp = nullptr;
         size--;
         return true;
     }
+    Node<T> * current = head;
     while (current->next != nullptr && current->next->data != data) {
         current = current->next;
     }
