@@ -7,8 +7,8 @@ struct heap {
 
     heap();
     T peek();
-    void insert();
-    T remove(T);
+    void insert(T);
+    T remove();
     int size();
 
     size_t left_child_index(size_t);
@@ -36,13 +36,19 @@ T heap<T>::peek() {
 }
 
 template <typename T>
-void heap<T>::insert() {
-    // TODO
+void heap<T>::insert(T data) {
+    min_heap.push_back(data);
+    heapify_up(min_heap.size() - 1);
 }
 
 template <typename T>
-T heap<T>::remove(T elem) {
-    // TODO
+T heap<T>::remove() {
+    // swap the index with the last element
+    T temp = min_heap[root_index()];
+    min_heap[root_index()] = min_heap[size()];
+    min_heap[size()] = temp;
+    min_heap.pop_back();
+    heapify_down(1);
 }
 
 template <typename T>
@@ -97,10 +103,6 @@ void heap<T>::heapify_up(size_t index) {
 
 template <typename T>
 void heap<T>::heapify_down(size_t index) {
-    // swap the index with the last element
-    T temp = min_heap[index];
-    min_heap[index] = min_heap[size()];
-    min_heap[size()] = temp;
     // heapify down at index
     while (has_child(index)) {
         if (right_child_index(index) != -1) {
@@ -140,5 +142,5 @@ void heap<T>::heapify_down(size_t index) {
 
 int main() {
     // Testing
-
+    // TODO
 }
