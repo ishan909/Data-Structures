@@ -4,15 +4,17 @@
 #include <vector>
 
 template <typename T>
-struct heap {
-    std::vector<T> min_heap;
-
-    heap();
+class Heap {
+public:
+    Heap();
     T peek();
     void push(T);
     T pop();
     size_t size();
+    void print();
 
+private:
+    std::vector<T> _elems;
     size_t left_child_index(size_t);
     size_t right_child_index(size_t);
     size_t parent_index(size_t);
@@ -20,17 +22,15 @@ struct heap {
     bool has_child(size_t);
     void heapify_up(size_t);
     void heapify_down(size_t);
-
-    void print();
 };
 
 /**
  * Heap constructor
  */
 template <typename T>
-heap<T>::heap() {
+Heap<T>::Heap() {
     // garbage/default value at index 0 of the vector
-    min_heap.push_back(T());
+    _elems.push_back(T());
 }
 
 /**
@@ -38,9 +38,9 @@ heap<T>::heap() {
  * @return min value in the structure
  */
 template <typename T>
-T heap<T>::peek() {
+T Heap<T>::peek() {
     if (size() > 0) {
-        return min_heap[1];
+        return _elems[1];
     } else {
         return T();
     }
@@ -51,9 +51,9 @@ T heap<T>::peek() {
  * @param data - the value you want to add to the heap
  */
 template <typename T>
-void heap<T>::push(T data) {
-    min_heap.push_back(data);
-    heapify_up(min_heap.size() - 1);
+void Heap<T>::push(T data) {
+    _elems.push_back(data);
+    heapify_up(_elems.size() - 1);
 }
 
 /**
@@ -61,13 +61,13 @@ void heap<T>::push(T data) {
  * @return the min value in the heap
  */
 template <typename T>
-T heap<T>::pop() {
+T Heap<T>::pop() {
     // swap the index with the last element
     if (size() > 0) {
-        T temp = min_heap[root_index()];
-        min_heap[root_index()] = min_heap[size()];
-        min_heap[size()] = temp;
-        min_heap.pop_back();
+        T temp = _elems[root_index()];
+        _elems[root_index()] = _elems[size()];
+        _elems[size()] = temp;
+        _elems.pop_back();
         heapify_down(1);
         return temp;
     } else {
@@ -80,8 +80,8 @@ T heap<T>::pop() {
  * @return the size of the heap
  */
 template <typename T>
-size_t heap<T>::size() {
-    return min_heap.size() - 1;
+size_t Heap<T>::size() {
+    return _elems.size() - 1;
 }
 
 /**
@@ -90,7 +90,7 @@ size_t heap<T>::size() {
  * @return the index of the left child or -1 if it does not exist
  */
 template <typename T>
-size_t heap<T>::left_child_index(size_t index) {
+size_t Heap<T>::left_child_index(size_t index) {
     if (index * 2 <= size()) {
         return index * 2;
     }
@@ -103,7 +103,7 @@ size_t heap<T>::left_child_index(size_t index) {
  * @return the index of the right child or -1 if it does not exist
  */
 template <typename T>
-size_t heap<T>::right_child_index(size_t index) {
+size_t Heap<T>::right_child_index(size_t index) {
     if (index * 2 + 1 <= size()) {
         return index * 2 + 1;
     }
@@ -116,7 +116,7 @@ size_t heap<T>::right_child_index(size_t index) {
  * @return the index of the parent or -1 if it does not exist
  */
 template <typename T>
-size_t heap<T>::parent_index(size_t index) {
+size_t Heap<T>::parent_index(size_t index) {
     if (index != 1) {
         return index / 2;
     }
@@ -128,7 +128,7 @@ size_t heap<T>::parent_index(size_t index) {
  * @return the index of the root
  */
 template <typename T>
-size_t heap<T>::root_index() {
+size_t Heap<T>::root_index() {
     return 1;
 }
 
@@ -138,7 +138,7 @@ size_t heap<T>::root_index() {
  * @return if the passed in index has a child
  */
 template <typename T>
-bool heap<T>::has_child(size_t index) {
+bool Heap<T>::has_child(size_t index) {
     return index * 2 <= size();
 }
 
@@ -148,11 +148,11 @@ bool heap<T>::has_child(size_t index) {
  * @parem index - the index that we may swap up
  */
 template <typename T>
-void heap<T>::heapify_up(size_t index) {
-    while (parent_index(index) != -1 && min_heap[parent_index(index)] > min_heap[index]) {
-        T temp = min_heap[parent_index(index)];
-        min_heap[parent_index(index)] = min_heap[index];
-        min_heap[index] = temp;
+void Heap<T>::heapify_up(size_t index) {
+    while (parent_index(index) != -1 && _elems[parent_index(index)] > _elems[index]) {
+        T temp = _elems[parent_index(index)];
+        _elems[parent_index(index)] = _elems[index];
+        _elems[index] = temp;
         index = parent_index(index);
     }
 }
@@ -163,29 +163,23 @@ void heap<T>::heapify_up(size_t index) {
  * @parem index - the index that we may swap down
  */
 template <typename T>
-void heap<T>::heapify_down(size_t index) {
+void Heap<T>::heapify_down(size_t index) {
     // heapify down at index
     while (has_child(index)) {
         if (right_child_index(index) != -1) {
             // compare index val with both children
-            T left_val = min_heap[left_child_index(index)];
-            T right_val = min_heap[right_child_index(index)];
-            if (left_val < right_val) {
-                if (left_val < min_heap[index]) {
-                    // swap left child with indexs
-                    T temp = min_heap[index];
-                    min_heap[index] = left_val;
-                    min_heap[left_child_index(index)] = temp;
+            if (_elems[left_child_index(index)] < _elems[right_child_index(index)]) {
+                if (_elems[left_child_index(index)] < _elems[index]) {
+                    // swap left child with index
+                    std::swap(_elems[index], _elems[left_child_index(index)]);
                     index = left_child_index(index);
                 } else {
                     break;
                 }
             } else {
-                if (right_val < min_heap[index]) {
+                if (_elems[right_child_index(index)] < _elems[index]) {
                     // swap right child with index
-                    T temp = min_heap[index];
-                    min_heap[index] = right_val;
-                    min_heap[right_child_index(index)] = temp;
+                    std::swap(_elems[index], _elems[right_child_index(index)]);
                     index = right_child_index(index);
                 } else {
                     break;
@@ -193,11 +187,9 @@ void heap<T>::heapify_down(size_t index) {
             }
         } else {
             // compare index val with left child only
-            T left_val = min_heap[left_child_index(index)];
-            if (left_val < min_heap[index]) {
-                // swap left child with indexs
-                min_heap[index] = left_val;
-                min_heap[left_child_index(index)] = min_heap[index];
+            if (_elems[left_child_index(index)] < _elems[index]) {
+                // swap left child with index
+                std::swap(_elems[index], _elems[left_child_index(index)]);
             }
             break;
         }
@@ -209,21 +201,21 @@ void heap<T>::heapify_down(size_t index) {
  * (Primarily for testing purposes)
  */
 template <typename T>
-void heap<T>::print() {
+void Heap<T>::print() {
     if (size() == 0){
         std::cout << "This heap is empty." << std::endl;
         return;
     } else {
-        for (int i = 1; i < min_heap.size() - 1; i++) {
-            std::cout << min_heap[i] << " | ";
+        for (int i = 1; i < _elems.size() - 1; i++) {
+            std::cout << _elems[i] << " | ";
         }
-        std::cout << min_heap[size()] << std::endl;
+        std::cout << _elems[size()] << std::endl;
     }
 }
 
 int main() {
     // Testing
-    heap<int> h;
+    Heap<int> h;
     h.push(5);
     h.push(3);
     h.push(8);
