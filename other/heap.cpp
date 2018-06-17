@@ -1,3 +1,5 @@
+// Vector basted implementation of a min heap
+
 #include <iostream>
 #include <vector>
 
@@ -7,8 +9,8 @@ struct heap {
 
     heap();
     T peek();
-    void insert(T);
-    T remove();
+    void push(T);
+    T pop();
     size_t size();
 
     size_t left_child_index(size_t);
@@ -22,12 +24,19 @@ struct heap {
     void print();
 };
 
+/**
+ * Heap constructor
+ */
 template <typename T>
 heap<T>::heap() {
-    // garbage value at index 0 of the vector
+    // garbage/default value at index 0 of the vector
     min_heap.push_back(T());
 }
 
+/**
+ * Returns the peak of the heap which is the smallest value
+ * @return min value in the structure
+ */
 template <typename T>
 T heap<T>::peek() {
     if (size() > 0) {
@@ -37,14 +46,22 @@ T heap<T>::peek() {
     }
 }
 
+/**
+ * Add a new value to the heap
+ * @param data - the value you want to add to the heap
+ */
 template <typename T>
-void heap<T>::insert(T data) {
+void heap<T>::push(T data) {
     min_heap.push_back(data);
     heapify_up(min_heap.size() - 1);
 }
 
+/**
+ * Removes the min value from the heap
+ * @return the min value in the heap
+ */
 template <typename T>
-T heap<T>::remove() {
+T heap<T>::pop() {
     // swap the index with the last element
     if (size() > 0) {
         T temp = min_heap[root_index()];
@@ -58,11 +75,20 @@ T heap<T>::remove() {
     }
 }
 
+/**
+ * Returns the size of the heap
+ * @return the size of the heap
+ */
 template <typename T>
 size_t heap<T>::size() {
     return min_heap.size() - 1;
 }
 
+/**
+ * Returns the index of the left child of the passed in index
+ * @param the index whose child index we are computing
+ * @return the index of the left child or -1 if it does not exist
+ */
 template <typename T>
 size_t heap<T>::left_child_index(size_t index) {
     if (index * 2 <= size()) {
@@ -71,6 +97,11 @@ size_t heap<T>::left_child_index(size_t index) {
     return -1;
 }
 
+/**
+ * Returns the index of the right child of the passed in index
+ * @param the index whose child index we are computing
+ * @return the index of the right child or -1 if it does not exist
+ */
 template <typename T>
 size_t heap<T>::right_child_index(size_t index) {
     if (index * 2 + 1 <= size()) {
@@ -79,6 +110,11 @@ size_t heap<T>::right_child_index(size_t index) {
     return -1;
 }
 
+/**
+ * Returns the index of the parent of the passed in index
+ * @param the index whose parent index we are computing
+ * @return the index of the parent or -1 if it does not exist
+ */
 template <typename T>
 size_t heap<T>::parent_index(size_t index) {
     if (index != 1) {
@@ -87,20 +123,33 @@ size_t heap<T>::parent_index(size_t index) {
     return -1;
 }
 
+/**
+ * Returns the index of the root in the vector implementation
+ * @return the index of the root
+ */
 template <typename T>
 size_t heap<T>::root_index() {
     return 1;
 }
 
+/**
+ * Returns if an element has a child in the vector
+ * @param the index that we are checking if it has children
+ * @return if the passed in index has a child
+ */
 template <typename T>
 bool heap<T>::has_child(size_t index) {
     return index * 2 <= size();
 }
 
+/**
+ * Helper method for push()
+ * Updates values in the vector implementation of the heap to be in min heap order
+ * @parem index - the index that we may swap up
+ */
 template <typename T>
 void heap<T>::heapify_up(size_t index) {
     while (parent_index(index) != -1 && min_heap[parent_index(index)] > min_heap[index]) {
-        // need to swap
         T temp = min_heap[parent_index(index)];
         min_heap[parent_index(index)] = min_heap[index];
         min_heap[index] = temp;
@@ -108,6 +157,11 @@ void heap<T>::heapify_up(size_t index) {
     }
 }
 
+/**
+ * Helper method for pop()
+ * Updates values in the vector implementation of the heap to be in min heap order
+ * @parem index - the index that we may swap down
+ */
 template <typename T>
 void heap<T>::heapify_down(size_t index) {
     // heapify down at index
@@ -150,6 +204,10 @@ void heap<T>::heapify_down(size_t index) {
     }
 }
 
+/**
+ * Prints the heap in order
+ * (Primarily for testing purposes)
+ */
 template <typename T>
 void heap<T>::print() {
     if (size() == 0){
@@ -166,25 +224,25 @@ void heap<T>::print() {
 int main() {
     // Testing
     heap<int> h;
-    h.insert(5);
-    h.insert(3);
-    h.insert(8);
-    h.insert(4);
-    h.insert(1);
-    h.insert(2);
-    h.insert(7);
-    h.insert(6);
+    h.push(5);
+    h.push(3);
+    h.push(8);
+    h.push(4);
+    h.push(1);
+    h.push(2);
+    h.push(7);
+    h.push(6);
     h.print();
-    h.remove();
+    h.pop();
     h.print();
-    h.remove();
-    h.remove();
-    h.remove();
-    h.remove();
+    h.pop();
+    h.pop();
+    h.pop();
+    h.pop();
     h.print();
-    h.remove();
-    h.remove();
+    h.pop();
+    h.pop();
     h.print();
-    h.remove();
+    h.pop();
     h.print();
 }
